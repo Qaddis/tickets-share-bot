@@ -5,3 +5,4 @@ load_dotenv()
 
 TOKEN = getenv("TOKEN")
 ADMIN = getenv("ADMIN")
+MODE = getenv("MODE")

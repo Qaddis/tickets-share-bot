@@ -1,4 +1,5 @@
 import asyncio
+import logging
 
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
@@ -6,7 +7,7 @@ from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 
-from config import TOKEN
+from config import TOKEN, MODE
 
 bot = Bot(
     token=TOKEN,
@@ -25,4 +26,10 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    if MODE != "PROD":
+        logging.basicConfig(level=logging.INFO)
+
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("Bot stopped")
