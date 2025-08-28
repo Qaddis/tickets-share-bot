@@ -4,5 +4,5 @@ from dotenv import load_dotenv
 load_dotenv()
 
 TOKEN = getenv("TOKEN")
-ADMIN = getenv("ADMIN")
+ADMIN_ID = int(getenv("ADMIN"))
 MODE = getenv("MODE")

@@ -4,10 +4,11 @@ import logging
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
-from aiogram.filters import CommandStart
-from aiogram.types import Message
+
+from app.handlers.general import router as general_router
 
 from config import TOKEN, MODE
+
 
 bot = Bot(
     token=TOKEN,
@@ -16,12 +17,9 @@ bot = Bot(
 dp = Dispatcher()
 
 
-@dp.message(CommandStart())
-async def cmd_start(msg: Message):
-    await msg.answer(f"<b>Привет</b>, {msg.from_user.id}!")
-
-
 async def main():
+    dp.include_router(general_router)
+
     await dp.start_polling(bot)
 
 
