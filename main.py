@@ -8,11 +8,11 @@ from aiogram.enums import ParseMode
 from app.handlers.general import router as general_router
 from app.handlers.suggest import router as suggest_router
 
-from config import TOKEN, MODE
+from config import settings
 
 
 bot = Bot(
-    token=TOKEN,
+    token=settings.TOKEN,
     default=DefaultBotProperties(parse_mode=ParseMode.HTML),
 )
 dp = Dispatcher()
@@ -26,7 +26,7 @@ async def main():
 
 
 if __name__ == "__main__":
-    if MODE != "PROD":
+    if settings.MODE != "PROD":
         logging.basicConfig(level=logging.INFO)
 
     try:

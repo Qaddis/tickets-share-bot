@@ -2,7 +2,7 @@ import logging
 
 from aiogram.types import Message
 
-from config import ADMIN_ID
+from config import settings
 
 
 async def send_tickets_to_admin(msg: Message, data: dict):
@@ -17,14 +17,14 @@ async def send_tickets_to_admin(msg: Message, data: dict):
     )
 
     try:
-        await msg.bot.send_message(ADMIN_ID, result)
+        await msg.bot.send_message(settings.ADMIN, result)
 
         for i, ticket in enumerate(tickets, 1):
             question = ticket.get("question")
             answer = ticket.get("answer") or "---"
 
             await msg.bot.send_message(
-                ADMIN_ID,
+                settings.ADMIN,
                 f"""<b>Билет №{i}</b>
 
 <b>Вопрос</b>:
