@@ -5,6 +5,8 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
+from app.db.queries import init_db
+
 from app.handlers.general import router as general_router
 from app.handlers.suggest import router as suggest_router
 
@@ -19,6 +21,8 @@ dp = Dispatcher()
 
 
 async def main():
+    await init_db()
+
     dp.include_router(suggest_router)
     dp.include_router(general_router)
 
