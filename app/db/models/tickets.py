@@ -22,6 +22,8 @@ class Tickets(Base):
     question: Mapped[str]
     answer: Mapped[str | None]
 
+    is_active: Mapped[bool]
+
     created_at: Mapped[datetime] = mapped_column(
         server_default=text("TIMEZONE('utc', now())"),
     )
