@@ -27,20 +27,20 @@ cancel_kb = ReplyKeyboardMarkup(
 )
 
 
-def save_ticket_kb(data):
+def save_ticket_kb(ticket_uid: str):
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
                     text="✅ Да",
                     callback_data=TicketCallbackFactory(
-                        action="save", data=data
+                        action="save", data=ticket_uid
                     ).pack(),
                 ),
                 InlineKeyboardButton(
                     text="❌ Нет",
                     callback_data=TicketCallbackFactory(
-                        action="decline", data=""
+                        action="decline", data=ticket_uid
                     ).pack(),
                 ),
             ]
