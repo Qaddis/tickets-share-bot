@@ -4,8 +4,10 @@ from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.fsm.context import FSMContext
 
 from app.fsm.suggest import SuggestedTickets
-from app.keyboards.suggest import stop_kb, answer_kb, cannot_answer_kb, cancel_kb
+
 from app.functions.suggest import send_tickets_to_admin
+
+from app.keyboards.suggest import stop_kb, answer_kb, cannot_answer_kb, cancel_kb
 
 
 router = Router()
@@ -17,25 +19,25 @@ async def cmd_suggest(msg: Message, state: FSMContext):
     await state.update_data(tickets=[])
 
     await msg.answer(
-        '💻 <b>Окей, начинаем ввод билетов</b>.\nОтправьте <u>текст</u> первого билета.\nКогда введёте все билеты, нажмите кнопку <b>"✅ Сохранить введённые билеты"</b>',
-        reply_markup=stop_kb,
+        "💻 <b>Окей, начинаем ввод билетов</b>.\nОтправьте <u>текст первого билета</u>",
+        reply_markup=cancel_kb,
     )
 
     await state.set_state(SuggestedTickets.ticket)
 
 
+@router.message(SuggestedTickets.ticket, F.text == "⛔ Отмена")
+async def cancel_proc(msg: Message, state: FSMContext):
+    await msg.answer(
+        "⛔ <b>Процесс прерван</b>",
+        reply_markup=ReplyKeyboardRemove(),
+    )
+
+    await state.clear()
+
+
 @router.message(SuggestedTickets.ticket, F.text == "✅ Сохранить введённые билеты")
 async def process_stop(msg: Message, state: FSMContext):
-    data = await state.get_data()
-
-    if not data.get("tickets"):
-        await msg.answer(
-            "⛔ <b>Процесс прерван</b>. Вы не ввели ни одного билета",
-            reply_markup=ReplyKeyboardRemove(),
-        )
-        await state.clear()
-        return
-
     await msg.answer(
         "📝 <b>Ввод билетов завершен</b>.\nТеперь введите <u>название предмета</u>",
         reply_markup=cancel_kb,

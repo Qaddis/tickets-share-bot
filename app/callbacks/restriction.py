@@ -45,7 +45,7 @@ async def ban(callback: CallbackQuery, callback_data: RestrictionCallbackFactory
     except Exception as e:
         logging.error(f"Error with banning user: {e}")
 
-        await callback.answer("Ошибка! Попробуйте ещё раз")
+        await callback.answer("Ошибка! Попробуйте ещё раз", show_alert=True)
 
 
 @router.callback_query(RestrictionCallbackFactory.filter(F.action == "unban"))
@@ -75,4 +75,4 @@ async def unban(callback: CallbackQuery, callback_data: RestrictionCallbackFacto
     except Exception as e:
         logging.error(f"Error with unbanning user: {e}")
 
-        await callback.answer("Ошибка! Попробуйте ещё раз")
+        await callback.answer("Ошибка! Попробуйте ещё раз", show_alert=True)
