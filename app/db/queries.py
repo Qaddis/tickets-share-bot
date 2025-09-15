@@ -1,7 +1,6 @@
 from sqlalchemy import text
 
 from app.db.database import engine, Base
-from app.db import models
 
 
 async def init_db():

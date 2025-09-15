@@ -14,7 +14,7 @@ from app.keyboards.restriction import ban_kb, unban_kb
 
 router = Router()
 
-banned_text = "\n\n<b>🤡 Пользователь забанен</b>"
+BANNED_TEXT = "\n\n<b>🤡 Пользователь забанен</b>"
 
 
 @router.callback_query(RestrictionCallbackFactory.filter(F.action == "ban"))
@@ -28,7 +28,7 @@ async def ban(callback: CallbackQuery, callback_data: RestrictionCallbackFactory
             await session.commit()
 
         await callback.message.edit_text(
-            callback.message.html_text + banned_text,
+            callback.message.html_text + BANNED_TEXT,
             reply_markup=unban_kb(callback_data.user_id),
         )
         await callback.answer(f"Пользователь {callback_data.user_id} забанен")
@@ -49,7 +49,7 @@ async def unban(callback: CallbackQuery, callback_data: RestrictionCallbackFacto
             await session.commit()
 
             await callback.message.edit_text(
-                callback.message.html_text.replace(banned_text, ""),
+                callback.message.html_text.replace(BANNED_TEXT, ""),
                 reply_markup=ban_kb(callback_data.user_id),
             )
             await callback.answer(f"Пользователь {callback_data.user_id} разбанен")

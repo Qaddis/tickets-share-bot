@@ -20,17 +20,17 @@ async def save_ticket(callback: CallbackQuery, callback_data: TicketCallbackFact
         async with session_factory() as session:
             await session.execute(
                 update(Tickets)
-                .where(Tickets.id == callback_data.data)
+                .where(Tickets.id == callback_data.ticket_id)
                 .values(is_active=True)
             )
 
             await session.commit()
 
-            await callback.message.edit_text(
-                callback.message.html_text + "\n\n<b>✅ Билет сохранён</b>",
-                reply_markup=None,
-            )
-            await callback.answer("Билет успешно сохранён")
+        await callback.message.edit_text(
+            callback.message.html_text + "\n\n<b>✅ Билет сохранён</b>",
+            reply_markup=None,
+        )
+        await callback.answer("Билет успешно сохранён")
     except Exception as e:
         logging.error(f"Error with updating ticket status: {e}")
 
@@ -42,17 +42,17 @@ async def decline_ticket(callback: CallbackQuery, callback_data: TicketCallbackF
     try:
         async with session_factory() as session:
             await session.execute(
-                delete(Tickets).where(Tickets.id == callback_data.data)
+                delete(Tickets).where(Tickets.id == callback_data.ticket_id)
             )
 
             await session.commit()
 
-            await callback.message.edit_text(
-                callback.message.html_text + "\n\n<b>❌ Билет не был сохранён</b>",
-                reply_markup=None,
-            )
+        await callback.message.edit_text(
+            callback.message.html_text + "\n\n<b>❌ Билет не был сохранён</b>",
+            reply_markup=None,
+        )
 
-            await callback.answer("Билет не сохранён")
+        await callback.answer("Билет не сохранён")
     except Exception as e:
         logging.error(f"Error with deleting ticket: {e}")
 

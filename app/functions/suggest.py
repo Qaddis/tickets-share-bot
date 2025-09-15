@@ -67,4 +67,5 @@ async def send_tickets_to_admin(msg: Message, data: dict):
         return True
     except Exception as e:
         logging.error(f"Error sending message to admin: {e}")
+
         return False

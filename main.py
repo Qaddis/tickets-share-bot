@@ -26,11 +26,8 @@ dp = Dispatcher()
 async def main():
     await init_db()
 
-    dp.include_router(suggest_callbacks)
-    dp.include_router(restriction_router)
-
-    dp.include_router(suggest_router)
-    dp.include_router(general_router)
+    dp.include_routers(suggest_callbacks, restriction_router)
+    dp.include_routers(suggest_router, general_router)
 
     await dp.start_polling(bot)
 
