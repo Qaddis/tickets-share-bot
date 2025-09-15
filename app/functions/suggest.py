@@ -2,6 +2,11 @@ import logging
 
 from aiogram.types import Message
 
+from app.db.database import session_factory
+from app.db.models import Tickets
+
+from app.keyboards.suggest import save_ticket_kb
+
 from config import settings
 
 
@@ -19,21 +24,42 @@ async def send_tickets_to_admin(msg: Message, data: dict):
     try:
         await msg.bot.send_message(settings.ADMIN, result)
 
-        for i, ticket in enumerate(tickets, 1):
-            question = ticket.get("question")
-            answer = ticket.get("answer") or "---"
+        tickets_to_send = []
 
-            await msg.bot.send_message(
-                settings.ADMIN,
-                f"""<b>Билет №{i}</b>
+        async with session_factory() as session:
+            for ticket_data in tickets:
+                question = ticket_data.get("question")
+                answer = ticket_data.get("answer")
+
+                new_ticket = Tickets(
+                    subject=subject,
+                    course=int(course),
+                    question=question,
+                    answer=answer,
+                    is_active=False,
+                )
+
+                session.add(new_ticket)
+
+                tickets_to_send.append(new_ticket)
+
+            await session.flush()
+
+            for i, ticket in enumerate(tickets_to_send, 1):
+                await msg.bot.send_message(
+                    settings.ADMIN,
+                    f"""<b>Билет №{i}</b>
 
 <b>Вопрос</b>:
-<code>{question}</code>
+<code>{ticket.question}</code>
 
 <b>Ответ</b>:
-<code>{answer}</code>
+<code>{ticket.answer or '---'}</code>
 """,
-            )
+                    reply_markup=save_ticket_kb(str(ticket.id)),
+                )
+
+            await session.commit()
 
         return True
     except Exception as e:
