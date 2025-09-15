@@ -4,15 +4,11 @@ from sqlalchemy import update, delete
 
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
-from aiogram.filters.callback_data import CallbackData
 
 from app.db.database import session_factory
 from app.db.models import Tickets
 
-
-class TicketCallbackFactory(CallbackData, prefix="ticket"):
-    action: str
-    data: str
+from app.callbacks.factories import TicketCallbackFactory
 
 
 router = Router()

@@ -5,7 +5,7 @@ from aiogram.types import (
     InlineKeyboardButton,
 )
 
-from app.callbacks.suggest import TicketCallbackFactory
+from app.callbacks.factories import TicketCallbackFactory
 
 
 stop_kb = ReplyKeyboardMarkup(
