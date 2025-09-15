@@ -6,6 +6,7 @@ from app.db.database import session_factory
 from app.db.models import Tickets
 
 from app.keyboards.suggest import save_ticket_kb
+from app.keyboards.restriction import ban_kb
 
 from config import settings
 
@@ -22,7 +23,9 @@ async def send_tickets_to_admin(msg: Message, data: dict):
     )
 
     try:
-        await msg.bot.send_message(settings.ADMIN, result)
+        await msg.bot.send_message(
+            settings.ADMIN, result, reply_markup=ban_kb(str(msg.from_user.id))
+        )
 
         tickets_to_send = []
 
