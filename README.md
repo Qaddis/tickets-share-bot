@@ -66,3 +66,7 @@ python main.py
 ```bash
 python3 main.py
 ```
+
+
+
+#Проверка Ветки ЛоЛ кек
