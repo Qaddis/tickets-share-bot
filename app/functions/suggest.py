@@ -1,5 +1,7 @@
 import logging
 
+from html import escape
+
 from aiogram.types import Message
 
 from app.db.database import session_factory
@@ -18,7 +20,7 @@ async def send_tickets_to_admin(msg: Message, data: dict):
 
     result = (
         f"✉️ Новые предложенные билеты от пользователя {f'@{msg.from_user.username}' if msg.from_user.username is not None else f'<i>{msg.from_user.first_name}</i>'} (ID: {msg.from_user.id})\n"
-        f"<b>Предмет</b>: {subject}\n"
+        f"<b>Предмет</b>: {escape(subject)}\n"
         f"<b>Курс</b>: {course}\n"
     )
 
@@ -54,10 +56,10 @@ async def send_tickets_to_admin(msg: Message, data: dict):
                     f"""<b>Билет №{i}</b>
 
 <b>Вопрос</b>:
-<code>{ticket.question}</code>
+<code>{escape(ticket.question)}</code>
 
 <b>Ответ</b>:
-<code>{ticket.answer or '---'}</code>
+<code>{escape(ticket.answer) or '---'}</code>
 """,
                     reply_markup=save_ticket_kb(str(ticket.id)),
                 )
@@ -69,3 +71,12 @@ async def send_tickets_to_admin(msg: Message, data: dict):
         logging.error(f"Error sending message to admin: {e}")
 
         return False
+
+
+def declensions(tickets: int) -> str:
+    if tickets % 10 == 1:
+        return f"{tickets} билет"
+    elif tickets % 10 > 1 and tickets % 10 < 5:
+        return f"{tickets} билета"
+    else:
+        return f"{tickets} билетов"
