@@ -3,6 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     MODE: str
+    TICKETS_LIMIT: int
 
     TOKEN: str
     ADMIN: int

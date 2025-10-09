@@ -69,3 +69,12 @@ async def send_tickets_to_admin(msg: Message, data: dict):
         logging.error(f"Error sending message to admin: {e}")
 
         return False
+
+
+def declensions(tickets: int) -> str:
+    if tickets % 10 == 1:
+        return f"{tickets} билет"
+    elif tickets % 10 > 1 and tickets % 10 < 5:
+        return f"{tickets} билета"
+    else:
+        return f"{tickets} билетов"
