@@ -1,3 +1,5 @@
+from html import escape
+
 from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.types import Message, ReplyKeyboardRemove
@@ -63,7 +65,7 @@ async def process_ticket(msg: Message, state: FSMContext):
     await state.update_data(tickets=tickets)
 
     await msg.answer(
-        f"🗒 Билет №{len(tickets)} <b>принят</b>. Текст:\n<code>{msg.text.strip()}</code>\n\nМожете указать <b>ответ</b> на этот билет?",
+        f"🗒 Билет №{len(tickets)} <b>принят</b>. Текст:\n<code>{escape(msg.text.strip())}</code>\n\nМожете указать <b>ответ</b> на этот билет?",
         reply_markup=answer_kb,
     )
 
