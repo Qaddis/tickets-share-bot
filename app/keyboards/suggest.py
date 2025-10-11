@@ -27,22 +27,40 @@ cancel_kb = ReplyKeyboardMarkup(
 )
 
 
-def save_ticket_kb(ticket_id: str):
+def save_ticket_kb(ticket_id: str, has_answer: bool):
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text="✅ Да",
-                    callback_data=TicketCallbackFactory(
-                        action="save", ticket_id=ticket_id
-                    ).pack(),
+            value
+            for value in [
+                [
+                    InlineKeyboardButton(
+                        text="💾 Сохранить",
+                        callback_data=TicketCallbackFactory(
+                            action="save", ticket_id=ticket_id
+                        ).pack(),
+                    ),
+                ],
+                (
+                    [
+                        InlineKeyboardButton(
+                            text="📝 Сохранить без ответа",
+                            callback_data=TicketCallbackFactory(
+                                action="no-answer", ticket_id=ticket_id
+                            ).pack(),
+                        )
+                    ]
+                    if has_answer
+                    else None
                 ),
-                InlineKeyboardButton(
-                    text="❌ Нет",
-                    callback_data=TicketCallbackFactory(
-                        action="decline", ticket_id=ticket_id
-                    ).pack(),
-                ),
+                [
+                    InlineKeyboardButton(
+                        text="❌ Не сохранять",
+                        callback_data=TicketCallbackFactory(
+                            action="decline", ticket_id=ticket_id
+                        ).pack(),
+                    ),
+                ],
             ]
+            if value
         ]
     )
