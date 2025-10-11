@@ -17,6 +17,7 @@ from config import settings
 router = Router()
 
 MAX_TICKETS = settings.TICKETS_LIMIT
+MAX_LENGTH = 3800
 
 
 @router.message(Command("suggest"))
@@ -59,6 +60,12 @@ async def process_stop(msg: Message, state: FSMContext):
 async def process_ticket(msg: Message, state: FSMContext):
     data = await state.get_data()
     tickets = data.get("tickets", [])
+
+    if len(msg.text.strip()) > MAX_LENGTH:
+        await msg.answer(
+            f"❗<b>Максимально допустимая длина</b> - <i>{MAX_LENGTH}</i> символов.\nПожалуйста, введите текст билета ещё раз"
+        )
+        return
 
     tickets.append({"question": msg.text.strip(), "answer": None})
 
@@ -129,6 +136,12 @@ async def process_cannot_answer(msg: Message, state: FSMContext):
 async def process_answer(msg: Message, state: FSMContext):
     data = await state.get_data()
     tickets = data.get("tickets", [])
+
+    if len(msg.text.strip()) > MAX_LENGTH:
+        await msg.answer(
+            f"❗<b>Максимально допустимая длина</b> - <i>{MAX_LENGTH}</i> символов.\nПожалуйста, введите ответ ещё раз"
+        )
+        return
 
     if tickets:
         tickets[-1]["answer"] = msg.text.strip()

@@ -53,16 +53,20 @@ async def send_tickets_to_admin(msg: Message, data: dict):
             for i, ticket in enumerate(tickets_to_send, 1):
                 await msg.bot.send_message(
                     settings.ADMIN,
-                    f"""<b>Билет №{i}</b>
-
-<b>Вопрос</b>:
-<code>{escape(ticket.question)}</code>
-
-<b>Ответ</b>:
-<code>{escape(ticket.answer) or '---'}</code>
-""",
-                    reply_markup=save_ticket_kb(str(ticket.id)),
+                    f"❔ <b>Билет №{i}. Вопрос:</b>\n<code>{escape(ticket.question)}</code>",
+                    reply_markup=(
+                        None
+                        if ticket.answer is not None
+                        else save_ticket_kb(str(ticket.id))
+                    ),
                 )
+
+                if ticket.answer is not None:
+                    await msg.bot.send_message(
+                        settings.ADMIN,
+                        f"✏️ <b>Билет №{i}. Ответ:</b>\n{escape(ticket.answer)}",
+                        reply_markup=save_ticket_kb(str(ticket.id)),
+                    )
 
             await session.commit()
 
