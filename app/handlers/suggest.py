@@ -16,8 +16,9 @@ from config import settings
 
 router = Router()
 
-MAX_TICKETS = settings.TICKETS_LIMIT
-MAX_LENGTH = 3800
+MAX_TICKETS_COUNT = settings.TICKETS_LIMIT
+MAX_TICKETS_LENGTH = 3800
+MAX_SUBJECT_LENGTH = 80
 
 
 @router.message(Command("suggest"))
@@ -61,9 +62,9 @@ async def process_ticket(msg: Message, state: FSMContext):
     data = await state.get_data()
     tickets = data.get("tickets", [])
 
-    if len(msg.text.strip()) > MAX_LENGTH:
+    if len(msg.text.strip()) > MAX_TICKETS_LENGTH:
         await msg.answer(
-            f"❗<b>Максимально допустимая длина</b> - <i>{MAX_LENGTH}</i> символов.\nПожалуйста, введите текст билета ещё раз"
+            f"❗<b>Максимально допустимая длина</b> - <i>{MAX_TICKETS_LENGTH}</i> символов.\nПожалуйста, введите текст билета ещё раз"
         )
         return
 
@@ -95,16 +96,16 @@ async def process_yes_answer(msg: Message, state: FSMContext):
     data = await state.get_data()
     tickets = data.get("tickets", [])
 
-    if len(tickets) < MAX_TICKETS:
+    if len(tickets) < MAX_TICKETS_COUNT:
         await msg.answer(
-            f'✖️ Хорошо.\nВведите <u>текст</u> следующего билета (вы ввели <i>{len(tickets)}</i> из <i>{MAX_TICKETS}</i> возможных) или нажмите <b>"✅ Сохранить введённые билеты"</b>',
+            f'✖️ Хорошо.\nВведите <u>текст</u> следующего билета (вы ввели <i>{len(tickets)}</i> из <i>{MAX_TICKETS_COUNT}</i> возможных) или нажмите <b>"✅ Сохранить введённые билеты"</b>',
             reply_markup=stop_kb,
         )
 
         await state.set_state(SuggestedTickets.ticket)
     else:
         await msg.answer(
-            f"📝 <b>Ввод билетов завершен</b>.\nВы ввели максимально допустимое кол-во билетов (<i>{MAX_TICKETS}</i>).\n\nТеперь введите <u>название предмета</u>",
+            f"📝 <b>Ввод билетов завершен</b>.\nВы ввели максимально допустимое кол-во билетов (<i>{MAX_TICKETS_COUNT}</i>).\n\nТеперь введите <u>название предмета</u>",
             reply_markup=cancel_kb,
         )
 
@@ -116,16 +117,16 @@ async def process_cannot_answer(msg: Message, state: FSMContext):
     data = await state.get_data()
     tickets = data.get("tickets", [])
 
-    if len(tickets) < MAX_TICKETS:
+    if len(tickets) < MAX_TICKETS_COUNT:
         await msg.answer(
-            f'❌ <b>Ответ не был сохранен</b>.\nВведите текст следующего билета (вы ввели <i>{len(tickets)}</i> из <i>{MAX_TICKETS}</i> возможных) или нажмите <b>"✅ Сохранить введённые билеты"</b>',
+            f'❌ <b>Ответ не был сохранен</b>.\nВведите текст следующего билета (вы ввели <i>{len(tickets)}</i> из <i>{MAX_TICKETS_COUNT}</i> возможных) или нажмите <b>"✅ Сохранить введённые билеты"</b>',
             reply_markup=stop_kb,
         )
 
         await state.set_state(SuggestedTickets.ticket)
     else:
         await msg.answer(
-            f"📝 <b>Ввод билетов завершен</b>.\nВы ввели максимально допустимое кол-во билетов (<i>{MAX_TICKETS}</i>).\n\nТеперь введите <u>название предмета</u>",
+            f"📝 <b>Ввод билетов завершен</b>.\nВы ввели максимально допустимое кол-во билетов (<i>{MAX_TICKETS_COUNT}</i>).\n\nТеперь введите <u>название предмета</u>",
             reply_markup=cancel_kb,
         )
 
@@ -137,27 +138,26 @@ async def process_answer(msg: Message, state: FSMContext):
     data = await state.get_data()
     tickets = data.get("tickets", [])
 
-    if len(msg.text.strip()) > MAX_LENGTH:
+    if len(msg.text.strip()) > MAX_TICKETS_LENGTH:
         await msg.answer(
-            f"❗<b>Максимально допустимая длина</b> - <i>{MAX_LENGTH}</i> символов.\nПожалуйста, введите ответ ещё раз"
+            f"❗<b>Максимально допустимая длина</b> - <i>{MAX_TICKETS_LENGTH}</i> символов.\nПожалуйста, введите ответ ещё раз"
         )
         return
 
-    if tickets:
-        tickets[-1]["answer"] = msg.text.strip()
+    tickets[-1]["answer"] = msg.text.strip()
 
-        await state.update_data(tickets=tickets)
+    await state.update_data(tickets=tickets)
 
-    if len(tickets) < MAX_TICKETS:
+    if len(tickets) < MAX_TICKETS_COUNT:
         await msg.answer(
-            f'✏️ <b>Ответ принят</b>.\nВведите <u>текст</u> следующего билета (вы ввели <i>{len(tickets)}</i> из <i>{MAX_TICKETS}</i> возможных) или нажмите <b>"✅ Сохранить введённые билеты"</b>',
+            f'✏️ <b>Ответ принят</b>.\nВведите <u>текст</u> следующего билета (вы ввели <i>{len(tickets)}</i> из <i>{MAX_TICKETS_COUNT}</i> возможных) или нажмите <b>"✅ Сохранить введённые билеты"</b>',
             reply_markup=stop_kb,
         )
 
         await state.set_state(SuggestedTickets.ticket)
     else:
         await msg.answer(
-            f"📝 <b>Ввод билетов завершен</b>.\nВы ввели максимально допустимое кол-во билетов (<i>{MAX_TICKETS}</i>).\n\nТеперь введите <u>название предмета</u>",
+            f"📝 <b>Ввод билетов завершен</b>.\nВы ввели максимально допустимое кол-во билетов (<i>{MAX_TICKETS_COUNT}</i>).\n\nТеперь введите <u>название предмета</u>",
             reply_markup=cancel_kb,
         )
 
@@ -176,6 +176,13 @@ async def process_cancel_subject(msg: Message, state: FSMContext):
 
 @router.message(SuggestedTickets.subject, F.text)
 async def process_subject(msg: Message, state: FSMContext):
+    if len(msg.text.strip()) > MAX_SUBJECT_LENGTH:
+        await msg.answer(
+            f"❗ <b>Максимально допустимая длина</b> - <i>{MAX_SUBJECT_LENGTH}</i> символов.\nПожалуйста, введите название ещё раз"
+        )
+
+        return
+
     await state.update_data(subject=msg.text.strip())
 
     await msg.answer(
