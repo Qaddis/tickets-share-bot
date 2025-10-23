@@ -9,6 +9,7 @@ from app.db.queries import init_db
 
 from app.handlers.general import router as general_router
 from app.handlers.suggest import router as suggest_router
+from app.handlers.get import router as get_router
 
 from app.callbacks.suggest import router as suggest_callbacks
 from app.callbacks.restriction import router as restriction_router
@@ -27,7 +28,7 @@ async def main():
     await init_db()
 
     dp.include_routers(suggest_callbacks, restriction_router)
-    dp.include_routers(suggest_router, general_router)
+    dp.include_routers(suggest_router, get_router, general_router)
 
     await dp.start_polling(bot)
 
