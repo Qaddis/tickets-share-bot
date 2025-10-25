@@ -13,18 +13,21 @@ from app.handlers.suggest import router as suggest_router
 from app.callbacks.suggest import router as suggest_callbacks
 from app.callbacks.restriction import router as restriction_router
 
+from app.middlewares.banned_filter_middleware import BannedFilterMiddleware
+
 from config import settings
-
-
-bot = Bot(
-    token=settings.TOKEN,
-    default=DefaultBotProperties(parse_mode=ParseMode.HTML),
-)
-dp = Dispatcher()
 
 
 async def main():
     await init_db()
+
+    bot = Bot(
+        token=settings.TOKEN,
+        default=DefaultBotProperties(parse_mode=ParseMode.HTML),
+    )
+    dp = Dispatcher()
+
+    dp.message.middleware(BannedFilterMiddleware())
 
     dp.include_routers(suggest_callbacks, restriction_router)
     dp.include_routers(suggest_router, general_router)
