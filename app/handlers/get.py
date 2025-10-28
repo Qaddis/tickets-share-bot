@@ -15,3 +15,9 @@ async def cmd_get(msg: Message, state: FSMContext):
     await msg.answer("Начинаем поиск нужных вам билетов. Введите курс")
       
     await state.set_state(TicketsToGet.course)
+
+      
+@router.message(TicketsToGet.course, F.text.isdigit())
+async def set_subject(msg: Message, state: FSMContext):
+    
+    print(await get_subject(msg, msg.text))
